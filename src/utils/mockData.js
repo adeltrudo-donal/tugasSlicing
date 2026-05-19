@@ -41,7 +41,7 @@ export const CAFES_DATA = [
     caption: 'Fresh roasts, minimalist setting.',
     description: 'Roastery Delight is a must-visit for those who love freshly roasted coffee. The cafe sources, roasts, and brews its beans on-site, providing a unique experience for coffee lovers.\n\nIn addition to a wide selection of coffee, they offer sandwiches and light meals that pair perfectly with their drinks. The interior is minimalist yet comfortable, perfect for work or relaxation.',
     rating: 4,
-    isFavorite: true, // Di screenshot halaman detail, ini yang dibuka
+    isFavorite: true,
   },
 ];
 

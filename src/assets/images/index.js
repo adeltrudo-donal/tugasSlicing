@@ -1,4 +1,3 @@
-
 const Images = {
   placeholder: require('./placeholder.png'),
   

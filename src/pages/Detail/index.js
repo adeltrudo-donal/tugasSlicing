@@ -12,7 +12,6 @@ const DetailPage = ({ route, navigation }) => {
   const { cafes, toggleFavorite } = useContext(CafesContext);
   const initialCafe = route.params.cafe;
   
-  // Ambil data terbaru dari state global agar selalu sinkron
   const currentCafe = cafes.find(c => c.id === initialCafe.id) || initialCafe;
 
   const Header = () => (

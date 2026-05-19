@@ -11,21 +11,18 @@ const MainPage = ({ navigation }) => {
   const { cafes } = useContext(CafesContext);
   const [filter, setFilter] = useState('nearest');
 
-  // Sort data based on selected filter
   const sortedCafes = [...cafes].sort((a, b) => {
     if (filter === 'nearest') {
       const distA = parseFloat(a.distance);
       const distB = parseFloat(b.distance);
       return distA - distB;
     } else {
-      // popular -> sort by rating descending
       return b.rating - a.rating;
     }
   });
 
   const ListHeader = () => (
     <View style={styles.container}>
-      {/* Hero Section */}
       <ImageBackground source={Images.placeholder} style={styles.hero} imageStyle={{ borderRadius: 28, resizeMode: 'cover' }}>
         <Typography style={styles.heroTitle}>Cafes List</Typography>
         <Typography style={styles.heroSubtitle}>Subtitle</Typography>
@@ -41,7 +38,6 @@ const MainPage = ({ navigation }) => {
         </View>
       </ImageBackground>
 
-      {/* Segmented Control */}
       <View style={styles.segmentContainer}>
         <TouchableOpacity 
           style={[styles.segment, filter === 'nearest' && styles.activeSegment]} 
@@ -94,7 +90,6 @@ const styles = StyleSheet.create({
   inactiveText: { color: COLORS.textPrimary, marginLeft: 4 },
   footerBtn: { borderWidth: 1, borderColor: COLORS.outline, borderRadius: 25, padding: 12, alignItems: 'center', marginTop: 20 },
   footerText: { color: COLORS.primary, fontWeight: '500' },
-  // Dekorasi Hero
   circleDecor: { position: 'absolute', width: 150, height: 150, borderRadius: 75, backgroundColor: '#E0E0E0', right: -20, top: 20 },
   squareDecor: { position: 'absolute', width: 100, height: 100, backgroundColor: '#9E9E9E', left: 40, top: -20, transform: [{ rotate: '45deg' }] },
 });

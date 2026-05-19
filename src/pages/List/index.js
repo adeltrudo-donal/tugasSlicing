@@ -8,7 +8,6 @@ import { CafesContext } from '../../context/CafesContext';
 const ListPage = ({ navigation }) => {
   const { cafes } = useContext(CafesContext);
 
-  // Fungsi untuk me-render setiap item (CafeCard)
   const renderCafeItem = ({ item }) => (
     <CafeCard 
       cafe={item} 
@@ -18,12 +17,10 @@ const ListPage = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header Halaman */}
       <View style={styles.header}>
         <Typography variant="title">All Cafes</Typography>
       </View>
 
-      {/* Implementasi FlatList sesuai materi */}
       <FlatList
         data={cafes}
         keyExtractor={(item) => item.id}

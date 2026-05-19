@@ -6,7 +6,7 @@ import { COLORS } from '../../utils/theme';
 const ImagePlaceholder = ({ size = 80, style }) => {
   return (
     <Image
-      source={Images.placeholder} // Memanggil dari setup Tahap 1
+      source={Images.placeholder}
       style={[
         styles.image,
         { width: size, height: size, borderRadius: size * 0.15 },

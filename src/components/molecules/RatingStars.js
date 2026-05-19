@@ -10,7 +10,6 @@ const RatingStars = ({ rating }) => {
     stars.push(
       <Icon
         key={i}
-        // Jika index saat ini lebih kecil/sama dengan rating, bintang terisi. Jika tidak, kosong.
         name={i <= rating ? 'star' : 'star-o'} 
         size={14}
         color={COLORS.star}

@@ -7,10 +7,9 @@ import { COLORS } from '../../utils/theme';
 const MenuCard = ({ menu }) => {
   return (
     <View style={styles.card}>
-      {/* Gambar Menu */}
+      
       <ImagePlaceholder size={88} style={styles.image} />
       
-      {/* Info Menu */}
       <View style={styles.content}>
         <Typography style={styles.title}>{menu.title}</Typography>
         <Typography variant="body" numberOfLines={3} style={styles.description}>
@@ -24,28 +23,28 @@ const MenuCard = ({ menu }) => {
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    marginBottom: 24, // Memberikan jarak yang lega antar menu seperti di Figma
+    marginBottom: 24,
     alignItems: 'flex-start',
   },
   image: {
-    borderRadius: 16, // Mengikuti radius gambar yang cukup membulat
+    borderRadius: 16,
     marginRight: 16,
     backgroundColor: COLORS.surfaceVariant,
   },
   content: {
-    flex: 1, // Agar teks deskripsi membungkus rapi ke bawah
+    flex: 1,
     justifyContent: 'flex-start',
   },
   title: {
     fontSize: 18,
     fontWeight: '500',
     color: COLORS.textPrimary,
-    marginBottom: 6, // Jarak antara judul dan deskripsi
+    marginBottom: 6,
   },
   description: {
     fontSize: 14,
     color: COLORS.textSecondary,
-    lineHeight: 22, // Line height dinaikkan sedikit agar teks tidak terlalu berdempetan
+    lineHeight: 22,
   },
 });
 

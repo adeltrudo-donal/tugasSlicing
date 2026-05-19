@@ -8,14 +8,12 @@ import { CafesContext } from '../../context/CafesContext';
 const FavoritePage = ({ navigation }) => {
   const { cafes } = useContext(CafesContext);
 
-  // Filter data hanya yang isFavorite true
   const favoriteCafes = cafes.filter((cafe) => cafe.isFavorite);
 
   const renderCafeItem = ({ item }) => (
     <CafeCard 
       cafe={item} 
       hideActions={true}
-      // Navigasi ke halaman Detail dengan membawa data 'item'
       onPress={() => navigation.navigate('Detail', { cafe: item })} 
     />
   );

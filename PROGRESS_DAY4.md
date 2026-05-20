@@ -841,9 +841,15 @@ src/
 5. **Selector memoization**: useSelector memoize results
 6. **Sorted in component**: Sort dilakukan di memory, bukan API
 
+## 17. App Icon Update
+
+1. **Android icon**: Icon aplikasi sudah ditambahkan untuk build Android.
+2. **iOS icon**: Icon aplikasi sudah ditambahkan untuk build iOS.
+3. **Branding consistency**: Identitas visual app sekarang konsisten di kedua platform.
+
 ---
 
-## 17. Potential Improvements (Future)
+## 18. Potential Improvements (Future)
 
 1. **Search Pagination**: Limit search ke loaded items vs fetch all
 2. **Caching Strategy**: Cache API response dengan expiry
@@ -855,7 +861,7 @@ src/
 
 ---
 
-## 18. Testing Strategy (Tidak Implemented, Rekomendasi)
+## 19. Testing Strategy (Tidak Implemented, Rekomendasi)
 
 ```typescript
 // Action test

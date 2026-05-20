@@ -58,7 +58,9 @@ const styles = StyleSheet.create({
     color: '#666666',
   },
   listContent: {
-    paddingVertical: 16,
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 12,
   },
 });
 

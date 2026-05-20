@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
-import { useCafes } from '../../context/CafesContext';
+import { useDispatch, useSelector } from 'react-redux';
+
 import CafeCard from '../../components/organisms/CafeCard';
+import { loadFavorites } from '../../action/cafe_action';
+import { RootState } from '../../store/store';
 
 type Props = {
   navigation: any;
 };
 
 const FavoriteScreen: React.FC<Props> = ({ navigation }) => {
-  const { favorites } = useCafes();
+  const dispatch = useDispatch<any>();
+  const favorites = useSelector((state: RootState) => state.cafes.favorites);
+
+  useEffect(() => {
+    dispatch(loadFavorites());
+  }, [dispatch]);
 
   if (favorites.length === 0) {
     return (
@@ -22,7 +30,7 @@ const FavoriteScreen: React.FC<Props> = ({ navigation }) => {
     <View style={styles.container}>
       <FlatList
         data={favorites}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
         renderItem={({ item }) => (
           <CafeCard
             cafe={item}

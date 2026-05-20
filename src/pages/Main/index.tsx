@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { View, FlatList, StyleSheet, SafeAreaView, TouchableOpacity, ImageBackground } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, FlatList, StyleSheet, SafeAreaView, TouchableOpacity, ImageBackground, ActivityIndicator } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 import CafeCard from '../../components/organisms/CafeCard';
 import Typography from '../../components/atoms/Typography';
 import Images from '../../assets/images';
 import { COLORS } from '../../utils/theme';
-import { useCafes } from '../../context/CafesContext';
+import { RootState } from '../../store/store';
+import { fetchCafes, fetchMoreCafes, loadFavorites } from '../../action/cafe_action';
 
 type Props = {
   navigation: any;
@@ -47,34 +50,63 @@ const ListHeader = ({ filter, setFilter }: { filter: 'nearest' | 'popular', setF
   </View>
 );
 
-const ListFooter = () => (
-  <TouchableOpacity style={styles.footerBtn}>
-      <Typography style={styles.footerText}>View 231 Restaurants</Typography>
-  </TouchableOpacity>
-);
+const ListFooter = ({ isLoadingMore }: { isLoadingMore: boolean }) => {
+  if (isLoadingMore) {
+    return <ActivityIndicator size="small" color={COLORS.primary} style={{ paddingVertical: 16 }} />;
+  }
+
+  // return (
+  //   <TouchableOpacity style={styles.footerBtn}>
+  //     <Typography style={styles.footerText}>View 231 Restaurants</Typography>
+  //   </TouchableOpacity>
+  // );
+};
 
 const MainPage: React.FC<Props> = ({ navigation }) => {
-  const { cafes } = useCafes();
+  const dispatch = useDispatch<any>();
+  const cafes = useSelector((state: RootState) => state.cafes.cafes);
+  const { page, hasMore, loadingMore } = useSelector((state: RootState) => ({
+    page: state.cafes.page,
+    hasMore: state.cafes.hasMore,
+    loadingMore: state.cafes.loadingMore,
+  }));
   const [filter, setFilter] = useState<'nearest' | 'popular'>('nearest');
+  const lastPageRef = useRef<number>(1);
+
+  useEffect(() => {
+    dispatch(loadFavorites());
+    dispatch(fetchCafes());
+    lastPageRef.current = 1;
+  }, [dispatch]);
+
+  const handleLoadMore = () => {
+    if (!loadingMore && hasMore && page > lastPageRef.current) {
+      lastPageRef.current = page;
+      dispatch(fetchMoreCafes(page));
+    }
+  };
 
   const sortedCafes = [...cafes].sort((a: any, b: any) => {
     if (filter === 'nearest') {
       const distA = parseFloat(a.distance || '0');
       const distB = parseFloat(b.distance || '0');
       return distA - distB;
-    } else {
-      return (parseInt(b.rating, 10) || 0) - (parseInt(a.rating, 10) || 0);
     }
+
+    return (parseInt(b.rating, 10) || 0) - (parseInt(a.rating, 10) || 0);
   });
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.surface }}>
       <FlatList
         data={sortedCafes}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
         renderItem={({ item }) => <CafeCard cafe={item} onPress={() => navigation.navigate('Detail', { id: item.id })} />}
         ListHeaderComponent={<ListHeader filter={filter} setFilter={setFilter} />}
-        ListFooterComponent={ListFooter}
+        ListFooterComponent={<ListFooter isLoadingMore={loadingMore} />}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 30 }}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.7}
       />
     </SafeAreaView>
   );

@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import axios from 'axios';
-import { useCafes } from '../../context/CafesContext';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { Cafe, Menu } from '../../models/Cafe';
 import MenuCard from '../../components/organisms/MenuCard';
 import Typography from '../../components/atoms/Typography';
 import { COLORS } from '../../utils/theme';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { RootState } from '../../store/store';
+import { toggleFavoriteCafe } from '../../action/cafe_action';
 
 // IMPORTANT: To make react-native-maps work on Android, you must add your Google Maps API Key
 // inside android/app/src/main/AndroidManifest.xml inside the <application> tag.
@@ -21,13 +24,15 @@ const BASE_URL = 'https://mock-api.ahmadfaisal.space';
 
 const DetailScreen: React.FC<Props> = ({ route, navigation }) => {
   const { id } = route.params;
-  const { cafes, toggleFavorite, isFavorite } = useCafes();
+  const dispatch = useDispatch<any>();
+  const cafes = useSelector((state: RootState) => state.cafes.cafes);
+  const favorites = useSelector((state: RootState) => state.cafes.favorites);
   const [cafe, setCafe] = useState<Cafe | null>(null);
   const [menus, setMenus] = useState<Menu[]>([]);
   const [loadingMenus, setLoadingMenus] = useState(false);
 
   useEffect(() => {
-    const foundCafe = cafes.find((c) => c.id === id);
+    const foundCafe = cafes.find((c) => String(c.id) === String(id));
     if (foundCafe) {
       setCafe(foundCafe);
       fetchMenus(foundCafe.menuId);
@@ -61,7 +66,7 @@ const DetailScreen: React.FC<Props> = ({ route, navigation }) => {
     );
   }
 
-  const isFav = isFavorite(cafe.id);
+  const isFav = favorites.some((fav) => fav.id === cafe.id);
 
   let latitude = 0;
   let longitude = 0;
@@ -86,7 +91,7 @@ const DetailScreen: React.FC<Props> = ({ route, navigation }) => {
           <Typography style={styles.title}>{cafe.name}</Typography>
           <TouchableOpacity 
             style={styles.favoriteBtn} 
-            onPress={() => toggleFavorite(cafe)}
+            onPress={() => dispatch(toggleFavoriteCafe(cafe))}
           >
             <Icon name={isFav ? 'heart' : 'heart-o'} size={24} color={isFav ? COLORS.primary : COLORS.textPrimary} />
           </TouchableOpacity>

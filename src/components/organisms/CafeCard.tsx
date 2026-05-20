@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
 import Typography from '../atoms/Typography';
 import RatingStars from '../molecules/RatingStars';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Cafe } from '../../models/Cafe';
 import { COLORS } from '../../utils/theme';
-import { useCafes } from '../../context/CafesContext';
+import { RootState } from '../../store/store';
+import { toggleFavoriteCafe } from '../../action/cafe_action';
 
 interface CafeCardProps {
   cafe: Cafe;
@@ -13,8 +16,8 @@ interface CafeCardProps {
 }
 
 const CafeCard: React.FC<CafeCardProps> = ({ cafe, onPress }) => {
-  const { toggleFavorite, isFavorite } = useCafes();
-  const isFav = isFavorite(cafe.id);
+  const dispatch = useDispatch<any>();
+  const isFav = useSelector((state: RootState) => state.cafes.favorites.some((fav) => fav.id === cafe.id));
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
@@ -23,7 +26,7 @@ const CafeCard: React.FC<CafeCardProps> = ({ cafe, onPress }) => {
         <View style={styles.headerRow}>
           <Typography style={styles.title} numberOfLines={1}>{cafe.name}</Typography>
           <RatingStars rating={parseInt(cafe.rating, 10) || 0} />
-          <TouchableOpacity onPress={() => toggleFavorite(cafe)} style={styles.favoriteBtn}>
+          <TouchableOpacity onPress={() => dispatch(toggleFavoriteCafe(cafe))} style={styles.favoriteBtn}>
             <Icon name={isFav ? 'heart' : 'heart-o'} size={20} color={COLORS.textPrimary} />
           </TouchableOpacity>
         </View>

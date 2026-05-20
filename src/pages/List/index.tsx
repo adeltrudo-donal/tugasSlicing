@@ -1,23 +1,44 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, FlatList, ActivityIndicator, Text, StyleSheet, TextInput } from 'react-native';
-import { useCafes } from '../../context/CafesContext';
+import { useDispatch, useSelector } from 'react-redux';
+
 import CafeCard from '../../components/organisms/CafeCard';
+import { fetchCafes, fetchMoreCafes, loadFavorites, setSearchKeyword } from '../../action/cafe_action';
+import { RootState } from '../../store/store';
 
 type Props = {
   navigation: any;
 };
 
 const ListScreen: React.FC<Props> = ({ navigation }) => {
-  const { cafes, loading, error, fetchCafes, searchCafes } = useCafes();
-  const [keyword, setKeyword] = useState('');
+  const dispatch = useDispatch<any>();
+  const { cafes, loading, loadingMore, error, page, hasMore, searchKeyword } = useSelector((state: RootState) => state.cafes);
+  const lastPageRef = useRef<number>(1);
+  
+  const filteredCafes = cafes.filter((cafe) => {
+    const keyword = searchKeyword.trim().toLowerCase();
+    if (!keyword) {
+      return true;
+    }
+
+    return (
+      cafe.name.toLowerCase().includes(keyword) ||
+      cafe.category.toLowerCase().includes(keyword) ||
+      cafe.shortDescription.toLowerCase().includes(keyword)
+    );
+  });
 
   useEffect(() => {
-    fetchCafes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    dispatch(loadFavorites());
+    dispatch(fetchCafes());
+    lastPageRef.current = 1;
+  }, [dispatch]);
 
-  const handleSearch = () => {
-    searchCafes(keyword);
+  const handleLoadMore = () => {
+    if (!loading && !loadingMore && hasMore && page > lastPageRef.current) {
+      lastPageRef.current = page;
+      dispatch(fetchMoreCafes(page));
+    }
   };
 
   return (
@@ -26,9 +47,8 @@ const ListScreen: React.FC<Props> = ({ navigation }) => {
         <TextInput
           style={styles.searchInput}
           placeholder="Search cafes..."
-          value={keyword}
-          onChangeText={setKeyword}
-          onSubmitEditing={handleSearch}
+          value={searchKeyword}
+          onChangeText={(text) => dispatch(setSearchKeyword(text))}
           returnKeyType="search"
           placeholderTextColor="#999"
         />
@@ -41,8 +61,8 @@ const ListScreen: React.FC<Props> = ({ navigation }) => {
         </View>
       ) : (
         <FlatList
-          data={cafes}
-          keyExtractor={(item) => item.id.toString()}
+          data={filteredCafes}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={({ item }) => (
             <CafeCard
               cafe={item}
@@ -50,6 +70,14 @@ const ListScreen: React.FC<Props> = ({ navigation }) => {
             />
           )}
           contentContainerStyle={styles.listContent}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.7}
+          ListFooterComponent={loadingMore ? <ActivityIndicator size="small" color="#0000ff" style={styles.footerLoader} /> : null}
+          ListEmptyComponent={(
+            <View style={styles.centered}>
+              <Text style={styles.emptyText}>No cafes found.</Text>
+            </View>
+          )}
         />
       )}
     </View>
@@ -87,8 +115,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 20,
   },
+  emptyText: {
+    textAlign: 'center',
+    color: '#666666',
+    fontSize: 16,
+  },
   listContent: {
     paddingBottom: 20,
+  },
+  footerLoader: {
+    paddingVertical: 16,
   },
 });
 

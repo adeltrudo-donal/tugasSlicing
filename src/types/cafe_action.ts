@@ -1,0 +1,21 @@
+import { Cafe } from '../models/Cafe';
+
+enum CafeActionType {
+    FETCH_CAFE_REQUEST = 'FETCH_CAFE_REQUEST',
+    FETCH_CAFE_SUCCESS = 'FETCH_CAFE_SUCCESS',
+    FETCH_CAFE_FAILURE = 'FETCH_CAFE_FAILURE',
+    FETCH_CAFE_MORE_REQUEST = 'FETCH_CAFE_MORE_REQUEST',
+    FETCH_CAFE_MORE_SUCCESS = 'FETCH_CAFE_MORE_SUCCESS',
+    FETCH_CAFE_MORE_FAILURE = 'FETCH_CAFE_MORE_FAILURE',
+    LOAD_FAVORITES_FAILURE = 'LOAD_FAVORITES_FAILURE',
+    TOGGLE_FAVORITE_CAFE = 'TOGGLE_FAVORITE_CAFE',
+    SET_SEARCH_KEYWORD = 'SET_SEARCH_KEYWORD',
+    LOAD_FAVORITES = 'LOAD_FAVORITES',
+}
+
+export type CafeAction = {
+    type: CafeActionType;
+    payload?: Cafe[] | Cafe | string | number | boolean;
+}
+
+export { CafeActionType };

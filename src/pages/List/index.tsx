@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   listContent: {
+    paddingHorizontal: 16,
     paddingBottom: 20,
   },
   footerLoader: {

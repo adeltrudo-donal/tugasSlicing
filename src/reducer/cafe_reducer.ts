@@ -37,6 +37,7 @@ const cafeReducer = (state = initialState, action: CafeAction): CafeState => {
             };
         case CafeActionType.FETCH_CAFE_FAILURE:
             return { ...state, loading: false, loadingMore: false, error: action.payload as string };
+        
         case CafeActionType.FETCH_CAFE_MORE_REQUEST:
             return { ...state, loadingMore: true, error: null };
         case CafeActionType.FETCH_CAFE_MORE_SUCCESS:

@@ -112,7 +112,7 @@ const DetailScreen: React.FC<Props> = ({ route, navigation }) => {
 
         {menus.length > 0 && <Typography style={styles.sectionTitle}>Menus</Typography>}
         {loadingMenus ? (
-          <ActivityIndicator size="small" color={COLORS.primary} style={{ marginVertical: 16 }} />
+          <ActivityIndicator size="small" color={COLORS.primary} style={styles.menuLoader} />
         ) : (
           menus.map((menu) => (
             <MenuCard key={menu.id} menu={menu} />
@@ -215,6 +215,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     borderRadius: 12,
+  },
+  menuLoader: {
+    marginVertical: 16,
   },
 });
 

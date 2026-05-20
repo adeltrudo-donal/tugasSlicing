@@ -6,6 +6,50 @@ import { CafeActionType } from '../types/cafe_action';
 
 const BASE_URL = 'https://mock-api.ahmadfaisal.space';
 const FAVORITES_KEY = '@favorite_cafes';
+const CURRENT_LOCATION = {
+    latitude: -7.330878,
+    longitude: 112.761956,
+};
+
+const toRad = (value: number) => {
+    return (value * Math.PI) / 180;
+};
+
+const calculateDistance = (cafeLatLong: string) => {
+    if (!cafeLatLong) {
+        return null;
+    }
+
+    const [latitudeString, longitudeString] = cafeLatLong.split(';');
+    const latitude = parseFloat(latitudeString);
+    const longitude = parseFloat(longitudeString);
+
+    if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+        return null;
+    }
+
+    const earthRadius = 6371;
+    const deltaLatitude = toRad(latitude - CURRENT_LOCATION.latitude);
+    const deltaLongitude = toRad(longitude - CURRENT_LOCATION.longitude);
+    const startLatitude = toRad(CURRENT_LOCATION.latitude);
+    const endLatitude = toRad(latitude);
+
+    const haversineA =
+        Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
+        Math.sin(deltaLongitude / 2) * Math.sin(deltaLongitude / 2) * Math.cos(startLatitude) * Math.cos(endLatitude);
+
+    const haversineC = 2 * Math.atan2(Math.sqrt(haversineA), Math.sqrt(1 - haversineA));
+    const distanceKm = earthRadius * haversineC;
+
+    return `${distanceKm.toFixed(1)} km away`;
+};
+
+const withDistance = (cafes: Cafe[]) => {
+    return cafes.map((cafe) => ({
+        ...cafe,
+        distance: calculateDistance(cafe.latlong) || cafe.distance,
+    }));
+};
 
 const fetchCafes = () => {
     return async (dispatch: any) => {
@@ -16,7 +60,7 @@ const fetchCafes = () => {
             const responseData = response.data?.data || response.data;
 
             if (Array.isArray(responseData)) {
-                dispatch({ type: CafeActionType.FETCH_CAFE_SUCCESS, payload: responseData });
+                dispatch({ type: CafeActionType.FETCH_CAFE_SUCCESS, payload: withDistance(responseData) });
             } else {
                 dispatch({ type: CafeActionType.FETCH_CAFE_FAILURE, payload: 'Invalid cafe response' });
             }
@@ -35,7 +79,7 @@ const fetchMoreCafes = (page: number) => {
             const responseData = response.data?.data || response.data;
 
             if (Array.isArray(responseData)) {
-                dispatch({ type: CafeActionType.FETCH_CAFE_MORE_SUCCESS, payload: responseData });
+                dispatch({ type: CafeActionType.FETCH_CAFE_MORE_SUCCESS, payload: withDistance(responseData) });
             } else {
                 dispatch({ type: CafeActionType.FETCH_CAFE_MORE_FAILURE, payload: 'Invalid cafe response' });
             }

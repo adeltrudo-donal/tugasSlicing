@@ -16,16 +16,16 @@ type Props = {
 
 const ListHeader = ({ filter, setFilter }: { filter: 'nearest' | 'popular', setFilter: (val: 'nearest' | 'popular') => void }) => (
   <View style={styles.container}>
-    <ImageBackground source={Images.placeholder} style={styles.hero} imageStyle={{ borderRadius: 28, resizeMode: 'cover' }}>
+    <ImageBackground source={Images.placeholder} style={styles.hero} imageStyle={styles.heroImage}>
       <Typography style={styles.heroTitle}>Cafes List</Typography>
       <Typography style={styles.heroSubtitle}>Subtitle</Typography>
       <View style={styles.chipRow}>
          <View style={styles.chip}>
-           <Icon name="calendar-o" size={14} color={COLORS.onPrimaryContainer} style={{ marginRight: 6 }} />
+           <Icon name="calendar-o" size={14} color={COLORS.onPrimaryContainer} style={styles.iconSpacing} />
            <Typography style={styles.chipText}>Label 1</Typography>
          </View>
          <View style={styles.chip}>
-           <Icon name="user" size={14} color={COLORS.onPrimaryContainer} style={{ marginRight: 6 }} />
+           <Icon name="user" size={14} color={COLORS.onPrimaryContainer} style={styles.iconSpacing} />
            <Typography style={styles.chipText}>Label 2</Typography>
          </View>
       </View>
@@ -52,7 +52,7 @@ const ListHeader = ({ filter, setFilter }: { filter: 'nearest' | 'popular', setF
 
 const ListFooter = ({ isLoadingMore }: { isLoadingMore: boolean }) => {
   if (isLoadingMore) {
-    return <ActivityIndicator size="small" color={COLORS.primary} style={{ paddingVertical: 16 }} />;
+    return <ActivityIndicator size="small" color={COLORS.primary} style={styles.footerLoader} />;
   }
 
   // return (
@@ -97,24 +97,26 @@ const MainPage: React.FC<Props> = ({ navigation }) => {
   });
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.surface }}>
+    <SafeAreaView style={styles.screen}>
       <FlatList
         data={sortedCafes}
         keyExtractor={(item, index) => `${item.id}-${index}`}
         renderItem={({ item }) => <CafeCard cafe={item} onPress={() => navigation.navigate('Detail', { id: item.id })} />}
         ListHeaderComponent={<ListHeader filter={filter} setFilter={setFilter} />}
         ListFooterComponent={<ListFooter isLoadingMore={loadingMore} />}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 30 }}
+        contentContainerStyle={styles.listContent}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.7}
-      />
+      />  
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {},
+  screen: { flex: 1, backgroundColor: COLORS.surface },
   hero: { height: 280, backgroundColor: '#BDBDBD', borderRadius: 28, marginTop: 10, padding: 24, justifyContent: 'flex-end', overflow: 'hidden' },
+  heroImage: { borderRadius: 28, resizeMode: 'cover' },
   heroTitle: { fontSize: 32, fontWeight: 'bold', color: 'white' },
   heroSubtitle: { color: 'white', marginBottom: 12 },
   chipRow: { flexDirection: 'row' },
@@ -127,8 +129,9 @@ const styles = StyleSheet.create({
   inactiveText: { color: COLORS.textPrimary, marginLeft: 4 },
   footerBtn: { borderWidth: 1, borderColor: COLORS.outline, borderRadius: 25, padding: 12, alignItems: 'center', marginTop: 20 },
   footerText: { color: COLORS.primary, fontWeight: '500' },
-  circleDecor: { position: 'absolute', width: 150, height: 150, borderRadius: 75, backgroundColor: '#E0E0E0', right: -20, top: 20 },
-  squareDecor: { position: 'absolute', width: 100, height: 100, backgroundColor: '#9E9E9E', left: 40, top: -20, transform: [{ rotate: '45deg' }] },
+  iconSpacing: { marginRight: 6 },
+  footerLoader: { paddingVertical: 16 },
+  listContent: { paddingHorizontal: 16, paddingBottom: 30 },
 });
 
 export default MainPage;

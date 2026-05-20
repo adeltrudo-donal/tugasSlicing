@@ -3,7 +3,11 @@ import { View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { COLORS } from '../../utils/theme';
 
-const RatingStars = ({ rating }) => {
+interface RatingStarsProps {
+  rating: number;
+}
+
+const RatingStars: React.FC<RatingStarsProps> = ({ rating }) => {
   const stars = [];
   
   for (let i = 1; i <= 5; i++) {

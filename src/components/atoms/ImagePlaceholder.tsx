@@ -1,9 +1,14 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet, StyleProp, ImageStyle } from 'react-native';
 import Images from '../../assets/images';
 import { COLORS } from '../../utils/theme';
 
-const ImagePlaceholder = ({ size = 80, style }) => {
+interface ImagePlaceholderProps {
+  size?: number;
+  style?: StyleProp<ImageStyle>;
+}
+
+const ImagePlaceholder: React.FC<ImagePlaceholderProps> = ({ size = 80, style }) => {
   return (
     <Image
       source={Images.placeholder}

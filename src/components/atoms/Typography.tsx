@@ -1,8 +1,14 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, TextProps, TextStyle, StyleProp } from 'react-native';
 import { COLORS } from '../../utils/theme';
 
-const Typography = ({ children, variant = 'body', style, ...props }) => {
+interface TypographyProps extends TextProps {
+  variant?: 'title' | 'subtitle' | 'body' | 'caption';
+  style?: StyleProp<TextStyle>;
+  children?: React.ReactNode;
+}
+
+const Typography: React.FC<TypographyProps> = ({ children, variant = 'body', style, ...props }) => {
   return (
     <Text style={[styles[variant], style]} {...props}>
       {children}
